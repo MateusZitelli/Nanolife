@@ -71,11 +71,12 @@ for i in range(10000):
 			if len(loops):
 				loops_printados.append(pos)
 	elif tex[pos] == 4:
-		loops.append(pos)
-		if not pos in loops_printados:
-			print 'while(memory[', ptr, ']){'
-			if len(loops):
-				loops_printados.append(pos)
+		if(mem[ptr]):
+			loops.append(pos)
+			if not pos in loops_printados:
+				print 'while(memory[', ptr, ']){'
+				if len(loops):
+					loops_printados.append(pos)
 	elif tex[pos] == 5:
 		if not pos in loops_printados and len(loops):
 			print '}'
