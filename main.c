@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <SDL.h>
 //#include "SDL/SDL_gfxPrimitives.h"
-#define SX 200
-#define SY 200
-#define WIDTH 200
-#define HEIGHT 200
+#define SX 150
+#define SY 150
+#define WIDTH 150
+#define HEIGHT 150
 #define BPP 4
 #define DEPTH 32
 
@@ -83,7 +83,6 @@ void set_bot(struct bot *b, int p, float e, unsigned short *g, struct bot **lb, 
 	b->color = cr << 16 | cg << 8 | cb;
 	b->age = MAX_AGE;
 	b->generation = gen + 1;
-	++last;
 }
 
 char compatible(struct bot *b1, struct bot *b2)
@@ -113,7 +112,7 @@ void run(struct bot *b, struct bot **lb)
 		//b->energy += 10;
 		switch (b->dir) {
 		case 0:
-			if (b->p + 1 < (SX - 1) * (SY - 1) && lb[b->p + 1] == NULL) {
+			if (b->p + 1 < SX * SY && lb[b->p + 1] == NULL) {
 				lb[b->p] = NULL;
 				b->p = b->p + 1;
 				lb[b->p] = b;
@@ -134,7 +133,7 @@ void run(struct bot *b, struct bot **lb)
 			}
 			break;
 		case 3:
-			if (b->p + SX < (SX - 1) * (SY - 1) && lb[b->p + SX] == NULL) {
+			if (b->p + SX < SX * SY && lb[b->p + SX] == NULL) {
 				lb[b->p] = NULL;
 				b->p = b->p + SX;
 				lb[b->p] = b;
@@ -146,7 +145,7 @@ void run(struct bot *b, struct bot **lb)
 		//b->energy += 10;
 		switch (b->dir) {
 		case 2:
-			if (b->p + 1 < (SX - 1) * (SY - 1) && lb[b->p + 1] == NULL) {
+			if (b->p + 1 < SX * SY && lb[b->p + 1] == NULL) {
 				lb[b->p] = NULL;
 				b->p = b->p + 1;
 				lb[b->p] = b;
@@ -167,7 +166,7 @@ void run(struct bot *b, struct bot **lb)
 			}
 			break;
 		case 1:
-			if (b->p + SX < (SX - 1) * (SY - 1) && lb[b->p + SX] == NULL) {
+			if (b->p + SX < SX * SY && lb[b->p + SX] == NULL) {
 				lb[b->p] = NULL;
 				b->p = b->p + SX;
 				lb[b->p] = b;
@@ -185,30 +184,30 @@ void run(struct bot *b, struct bot **lb)
 			ngcode[rand() % MEM_SIZE] = rand() % 7;
 		switch (b->dir) {
 		case 0:
-			if (b->p + 1 < (SX - 1) * (SY - 1) && lb[b->p + 1] == NULL) {
+			if (b->p + 1 < SX * SY && lb[b->p + 1] == NULL) {
 				lb[b->p + 1] = &bots[last];
-				set_bot(&bots[last], b->p + 1, b->energy / 5.0, ngcode, lb, b->generation);
+				set_bot(&bots[last++], b->p + 1, b->energy / 5.0, ngcode, lb, b->generation);
 				b->energy -= b->energy / 5.0;
 			}
 			break;
 		case 1:
 			if (b->p - SX >= 0 && lb[b->p - SX] == NULL) {
 				lb[b->p - SX] = &bots[last];
-				set_bot(&bots[last], b->p - SX, b->energy / 5.0, ngcode, lb, b->generation);
+				set_bot(&bots[last++], b->p - SX, b->energy / 5.0, ngcode, lb, b->generation);
 				b->energy -= b->energy / 5.0;
 			}
 			break;
 		case 2:
 			if (b->p - 1 >= 0 && lb[b->p - 1] == NULL) {
 				lb[b->p - 1] = &bots[last];
-				set_bot(&bots[last], b->p - 1, b->energy / 5.0, ngcode, lb, b->generation);
+				set_bot(&bots[last++], b->p - 1, b->energy / 5.0, ngcode, lb, b->generation);
 				b->energy -= b->energy / 5.0;
 			}
 			break;
 		case 3:
-			if (b->p + SX < (SX - 1) * (SY - 1) && lb[b->p + SX] == NULL) {
+			if (b->p + SX < SX * SY && lb[b->p + SX] == NULL) {
 				lb[b->p + SX] = &bots[last];
-				set_bot(&bots[last], b->p + SX, b->energy / 5.0, ngcode, lb, b->generation);
+				set_bot(&bots[last++], b->p + SX, b->energy / 5.0, ngcode, lb, b->generation);
 				b->energy -= b->energy / 5.0;
 			}
 			break;
@@ -217,7 +216,7 @@ void run(struct bot *b, struct bot **lb)
 	case 6:
 		switch (b->dir) {
 		case 0:
-			if (b->p + 1 < (SX - 1) * (SY - 1) && lb[b->p + 1] != NULL) {
+			if (b->p + 1 < SX * SY && lb[b->p + 1] != NULL) {
 				b->energy += lb[b->p + 1]->energy / 3.0;
 				lb[b->p + 1]->energy /= 2.0;
 			}
@@ -235,7 +234,7 @@ void run(struct bot *b, struct bot **lb)
 			}
 			break;
 		case 3:
-			if (b->p + SX < (SX - 1) * (SY - 1) && lb[b->p + SX] != NULL) {
+			if (b->p + SX < SX * SY && lb[b->p + SX] != NULL) {
 				b->energy += lb[b->p + SX]->energy / 3.0;
 				lb[b->p + SX]->energy /= 2.0;
 			}
@@ -245,7 +244,7 @@ void run(struct bot *b, struct bot **lb)
 	case 7:
 		switch (b->dir) {
 		case 0:
-			if (b->p + 1 < (SX - 1) * (SY - 1) && lb[b->p + 1] != NULL) {
+			if (b->p + 1 < SX * SY && lb[b->p + 1] != NULL) {
 				mean = (b->energy + lb[b->p + 1]->energy) / 2.0;
 				b->energy = mean;
 				lb[b->p + 1]->energy = mean;
@@ -266,7 +265,7 @@ void run(struct bot *b, struct bot **lb)
 			}
 			break;
 		case 3:
-			if (b->p + SX < (SX - 1) * (SY - 1) && lb[b->p + SX] != NULL) {
+			if (b->p + SX < SX * SY && lb[b->p + SX] != NULL) {
 				mean = (b->energy + lb[b->p + SX]->energy) / 2.0;
 				b->energy = mean;
 				lb[b->p + SX]->energy = mean;
@@ -313,7 +312,7 @@ void compute(struct bot *b, struct bot **lb)
 		run(b, lb);
 		break;
 	}
-	b->memory[b->ptr] = b->memory[b->ptr] % 128;
+	b->memory[b->ptr] = b->memory[b->ptr] % 8;
 }
 
 void setpixel(SDL_Surface * screen, int x, int y, int r, int g, int b)
@@ -358,20 +357,18 @@ int main(void)
 	for (i = 0; i < SX * SY; i++) {
 		lb[i] = NULL;
 	}
-	for (j = 0; j < 10000; j++) {
+	for (j = 0; j < 0; j++) {
 		px = rand() % WIDTH;
 		py = rand() % HEIGHT;
 		for (i = 0; i < MEM_SIZE; i++) {
 			g[i] = rand() % 7;
 		}
-		set_bot(&bots[last], py * SX + px, 1000, g, lb, 0);
+		set_bot(&bots[last++], py * SX + px, 1000, g, lb, 0);
 	}
 	short get = 0, view = 0;
 	while (!keypress) {
 		for (i = 0; i < last; i++) {
-			if(bots[i].p > SX * SY) printf("ups0 %i %i\n", i, k);
 			compute(&bots[i], lb);
-			if(bots[i].p > SX * SY) printf("ups1\n");
 			switch (view) {
 			case 0:
 				setpixel(screen, bots[i].p % SX, bots[i].p / SX % SY, bots[i].color >> 16, (bots[i].color >> 8) & 0xFF, bots[i].color & 0xFF);
@@ -390,7 +387,6 @@ int main(void)
 					setpixel(screen, bots[i].p % SX, bots[i].p / SX % SY, bots[i].color >> 16, (bots[i].color >> 8) & 0xFF, bots[i].color & 0xFF);
 				break;
 			}
-			//printf("%i, %i\n", bots[i].p % SX, bots[i].p / SX);
 		}
 		for (i = 0; i < last; i++) {
 			if (get) {
@@ -402,6 +398,7 @@ int main(void)
 			if (!bots[i].energy || !bots[i].age) {
 				lb[bots[i].p] = NULL;
 				bots[i] = bots[--last];
+				lb[bots[i].p] = &bots[i];
 			}
 		}
 		if (get) {
@@ -419,9 +416,9 @@ int main(void)
 				g[i] = rand() % 7;
 			}
 			if (lb[py * SX + px] == NULL)
-				set_bot(&bots[last], py * SX + px, 1000, g, lb, 0);
+				set_bot(&bots[last++], py * SX + px, 1000, g, lb, 0);
 		}
-		if (view != 5){// && k % 10 == 0) {
+		if (view != 5 && k % 100 == 0) {
 			SDL_Flip(screen);
 			//if(k % 1000 == 0)
 			SDL_FillRect(screen, NULL, 0x000000);
@@ -453,7 +450,7 @@ int main(void)
 						printf("Generation View\n");
 						break;
 					case 4:
-						printf("Filtered View\n");
+						printf("Filtered Genetic View\n");
 						break;
 					case 5:
 						printf("Don't rendening\n");
