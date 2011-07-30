@@ -53,12 +53,12 @@ struct bot {
 
 void set_bot(struct bot *b, int p, float e, unsigned short *g, struct bot **lb, short gen)
 {
-	if(p > SX * SY) printf("ups2\n");
 	short i;
 	int cr = 0, cg = 0, cb = 0;
+	if(p > SX * SY) printf("ups2\n");
+	if (e <= 0)
+		return;
 	b->p = p;
-	if (e < 0)
-		e = 0;
 	b->energy = e;
 	for (i = 0; i < MEM_SIZE; i++) {
 		b->gcode[i] = g[i];
@@ -282,7 +282,7 @@ void compute(struct bot *b, struct bot **lb)
 	//printf("1 %i -> %i\n", b->pos, b->gcode[b->pos]);
 	--b->age;
 	--b->energy;
-	if (b->pos > MEM_SIZE || b->ptr > MEM_SIZE || b->ptr < 0)
+	if (b->pos > MEM_SIZE || b->ptr > MEM_SIZE || b->ptr < 0 || b->nl > MEM_SIZE)
 		return;
 	switch (b->gcode[b->pos++]) {
 	case 0:
@@ -310,14 +310,10 @@ void compute(struct bot *b, struct bot **lb)
 		}
 		break;
 	case 6:
-		if(b->p > SX * SY) printf("ups3\n");
 		run(b, lb);
-		if(b->p > SX * SY) printf("ups4\n");
 		break;
 	}
-	if(b->p < 0) b->p = 0;
-	if(b->p > SX * SY) b->p = SX * SY - 1;
-	b->memory[b->ptr] = b->memory[b->ptr] % 8;
+	b->memory[b->ptr] = b->memory[b->ptr] % 128;
 }
 
 void setpixel(SDL_Surface * screen, int x, int y, int r, int g, int b)
@@ -362,7 +358,7 @@ int main(void)
 	for (i = 0; i < SX * SY; i++) {
 		lb[i] = NULL;
 	}
-	for (j = 0; j < 0; j++) {
+	for (j = 0; j < 10000; j++) {
 		px = rand() % WIDTH;
 		py = rand() % HEIGHT;
 		for (i = 0; i < MEM_SIZE; i++) {
@@ -373,7 +369,7 @@ int main(void)
 	short get = 0, view = 0;
 	while (!keypress) {
 		for (i = 0; i < last; i++) {
-			if(bots[i].p > SX * SY) printf("ups0\n");
+			if(bots[i].p > SX * SY) printf("ups0 %i %i\n", i, k);
 			compute(&bots[i], lb);
 			if(bots[i].p > SX * SY) printf("ups1\n");
 			switch (view) {
@@ -403,7 +399,7 @@ int main(void)
 					v = bots[i].energy;
 				}
 			}
-			if (bots[i].energy <= 0 || bots[i].age <= 0) {
+			if (!bots[i].energy || !bots[i].age) {
 				lb[bots[i].p] = NULL;
 				bots[i] = bots[--last];
 			}
@@ -416,21 +412,21 @@ int main(void)
 			printf("##################\n");
 			get = 0; 
 		}
-		for (j = 0; j < 1; j++) {
+		for (j = 0; j < 10; j++) {
 			px = rand() % WIDTH;
 			py = rand() % HEIGHT;
 			for (i = 0; i < MEM_SIZE; i++) {
 				g[i] = rand() % 7;
 			}
 			if (lb[py * SX + px] == NULL)
-				set_bot(&bots[last++], py * SX + px, 1000, g, lb, 0);
+				set_bot(&bots[last], py * SX + px, 1000, g, lb, 0);
 		}
-		if (view != 5 && k % 1000 == 0) {
+		if (view != 5){// && k % 10 == 0) {
 			SDL_Flip(screen);
 			//if(k % 1000 == 0)
 			SDL_FillRect(screen, NULL, 0x000000);
 		}
-		k++;
+		//k;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:
