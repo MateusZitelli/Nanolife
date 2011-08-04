@@ -1,9 +1,11 @@
-prog = [int(i) for i in open('creat', 'r').read().split("\n")[:-1]]
+from random import choice
+prog = [int(i) for i in open('creat', 'r').read().split(", ")[:-1]]
+times = [0 for i in range(len(prog))]
 ptr = 0
 pos = 0
 memory = [0 for i in range(len(prog))]
 loops = []
-position = [0,0]
+position = [250,250]
 rotation = 0
 def do(v):
 	global rotation
@@ -42,8 +44,8 @@ def do(v):
 	elif v == 7:
 		print "GIVE;"
 
-for i in range(200):
-	if ptr >= len(prog) or pos >= len(prog): break
+for i in range(1000):
+	if ptr >= len(prog) - 1 or pos >= len(prog) - 1: break
 	if prog[pos] == 0:
 		ptr += 1
 		#print 'ptr++;'
@@ -67,6 +69,18 @@ for i in range(200):
 			del loops[-1]
 		#print '}'
 	elif prog[pos] == 6:
+		memory[ptr] = choice([0,1])
+		if(memory[ptr]): print "Compatible bot in front at", ptr
+		else: print "Imcompatible or null cell at", ptr
+	elif prog[pos] == 7:
+		memory[ptr] = rotation
+		print 'Rotation =', rotation, 'at', ptr
+	elif prog[pos] == 8:
 		do(memory[ptr])
 		#print 'Do();'
+	times[pos] += 1
 	pos += 1
+	#memory[ptr] %= 9
+	#print memor
+print prog
+print times

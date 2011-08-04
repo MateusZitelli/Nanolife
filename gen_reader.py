@@ -1,4 +1,4 @@
-tex = [int(i) for i in open('creat', 'r').read().split("\n")[:-1]]
+tex = [int(i) for i in open('creat', 'r').read().split(", ")[:-1]]
 
 for i in tex:
 	if i == 0:
