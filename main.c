@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <SDL.h>
 //#include "SDL/SDL_gfxPrimitives.h"
-#define SX 100
-#define SY 100
-#define WIDTH 100
-#define HEIGHT 100
+#define SX 300
+#define SY 300
+#define WIDTH 300
+#define HEIGHT 300
 #define BPP 4
 #define DEPTH 32
 
@@ -434,7 +434,7 @@ int main(void)
 		SDL_Quit();
 		return 1;
 	}
-	int i, px, py, j, food = 0;
+	int i, px, py, j, food = 4;
 	unsigned short g[MEM_SIZE];
 	bots = (struct bot *)malloc(sizeof(struct bot) * SX * SY);
 	struct bot **lb = (struct bot **)malloc(sizeof(struct bot *) * SX * SY);
