@@ -21,3 +21,10 @@ BUILD (Nanolife needs libdsl)
 -make
 RUN
 -./b.bin
+
+FEATURES
+- UP/DOWN -> More/Less food.
+- V key -> Change the view mode.
+- G key -> Print in terminal the genetic code of the cell with more energy.
+- Right click -> Print in terminal the genetic code of the clicked cell.
+- gen_runner.py - Run the genetic code in "creat" file and show how it works.

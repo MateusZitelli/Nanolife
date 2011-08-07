@@ -10,7 +10,7 @@
 #define DEPTH 32
 
 #define MEM_SIZE 128
-#define MAX_AGE 1000.0
+#define MAX_AGE 600.0
 
 int last;
 struct bot *bots;
@@ -22,11 +22,12 @@ struct bot *bots;
 0x3 - memory[b->ptr]--
 0x4 - while(memory[b->ptr]){
 0x5 - }
-0x6 - gcode[b->ptr] = 1 if have a bot in front or 0 if not
-0x7 - Act;
+0x6 - memory[b->ptr] = 1 if have a compatible bot in front or 0 if not
+0x7 - memory[b->ptr] = dir
+0x8 - Act;
 */
 
-/*
+/*Actions dict:
 0x0 - Do nothing
 0x1 - Rotate clockwise - dir++
 0x2 - Rotate anticlockwise - dir--
@@ -534,9 +535,9 @@ int main(void)
 		//else view = 5;
 		if (view != 5) {
 			SDL_Flip(screen);
-			sprintf(buf ,"%d", k / 10);
-			//SDL_SaveBMP(screen, buf);
-			//if(k % 1000 == 0)
+			//if(k % 100 == 0)
+				//sprintf(buf ,"%d", k / 100);
+				//SDL_SaveBMP(screen, buf);
 			SDL_FillRect(screen, NULL, 0x000000);
 			
 		}
