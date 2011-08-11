@@ -20,10 +20,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL.h>
-#define SX 300
-#define SY 300
-#define WIDTH 300
-#define HEIGHT 300
+#define SX 400
+#define SY 400
+#define WIDTH 400
+#define HEIGHT 400
 #define BPP 4
 #define DEPTH 32
 
@@ -144,6 +144,17 @@ char compatible(struct bot *b1, struct bot *b2)
 			return (0);
 	}
 	return (1);
+}
+
+float compatibility(short *gcode, struct bot *b)
+{
+	int i;
+	float val = 0;
+	for (i = 0; i < MEM_SIZE; i++) {
+		if (gcode[i] == b->gcode[i])
+			val += 1;
+	}
+	return (val/MEM_SIZE);
 }
 
 void run(struct bot *b, struct bot **lb)
@@ -455,6 +466,7 @@ int main(void)
 	}
 	int i, px, py, j, food = 4;
 	unsigned short g[MEM_SIZE];
+	short selected[MEM_SIZE];
 	bots = (struct bot *)malloc(sizeof(struct bot) * SX * SY);
 	struct bot **lb = (struct bot **)malloc(sizeof(struct bot *) * SX * SY);
 	for (i = 0; i < SX * SY; i++) {
@@ -469,6 +481,7 @@ int main(void)
 		set_bot(&bots[last++], py * SX + px, 10000, g, lb, 0);
 	}
 	short get = 0, view = 0;
+	float comp;
 	char buf[20];
 	while (!keypress) {
 		++k;
@@ -511,6 +524,16 @@ int main(void)
 						 bots[i].g,
 						 bots[i].b);
 				break;
+			case 5:
+				if(selected != NULL){
+					comp = compatibility(selected, &bots[i]) * 255;
+					setpixel(screen, bots[i].p % SX,
+						 bots[i].p / SX % SY,
+						 comp,
+						 comp,
+						 comp);
+				}
+				break;
 			}
 		}
 		for (i = 0; i < SX * SY; i++) {
@@ -551,7 +574,7 @@ int main(void)
 		}
 		//if(k % 10 == 0) view = 0;
 		//else view = 5;
-		if (view != 5) {
+		if (view != 6) {
 			SDL_Flip(screen);
 			//if(k % 100 == 0)
 				//sprintf(buf ,"%d", k / 100);
@@ -570,7 +593,7 @@ int main(void)
 					get = 1;
 					break;
 				case SDLK_v:
-					view = (view + 1) % 6;
+					view = (view + 1) % 7;
 					switch (view) {
 					case 0:
 						printf("Genetic View\n");
@@ -589,6 +612,9 @@ int main(void)
 						    ("Filtered Genetic View\n");
 						break;
 					case 5:
+						printf("Compatibility View\n");
+						break;
+					case 6:
 						printf("Don't rendening\n");
 						SDL_FillRect(screen, NULL,
 							     0x000000);
@@ -611,6 +637,7 @@ int main(void)
 						printf("GENETIC CODE: ");
 						for (i = 0; i < MEM_SIZE - 1; i++) {
 							printf("%i, ", lb[event.button.x + SX * event.button.y]->gcode[i]);
+							selected[i] = lb[event.button.x + SX * event.button.y]->gcode[i];
 						}
 						printf("%i\n", lb[event.button.x + SX * event.button.y]->gcode[i]);
 					}
