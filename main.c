@@ -20,10 +20,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL.h>
-#define SX 400
-#define SY 400
-#define WIDTH 400
-#define HEIGHT 400
+#define SX 200
+#define SY 200
+#define WIDTH 200
+#define HEIGHT 200
 #define BPP 4
 #define DEPTH 32
 
@@ -239,7 +239,7 @@ void run(struct bot *b, struct bot **lb)
 			ngcode[i] = b->gcode[i];
 		}
 		for(i = 0; i < 100; i++){
-			if (rand() % 1000 > 800)
+			if (rand() % 1000 > 400)
 				ngcode[rand() % MEM_SIZE] = rand() % 9;
 			else
 				break;
@@ -454,8 +454,7 @@ int main(void)
 	SDL_Surface *screen;
 	SDL_Event event;
 	last = 0;
-	int keypress = 0;
-	int h = 0, k = 0;
+	int keypress = 0,h = 0, k = 0,i, px, py, j, food = 50;
 	long long b = 0, v = 0, a = MAX_AGE;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		return 1;
@@ -464,7 +463,6 @@ int main(void)
 		SDL_Quit();
 		return 1;
 	}
-	int i, px, py, j, food = 4;
 	unsigned short g[MEM_SIZE];
 	short selected[MEM_SIZE];
 	bots = (struct bot *)malloc(sizeof(struct bot) * SX * SY);
@@ -562,7 +560,7 @@ int main(void)
 			printf("##################\n");
 			get = 0;
 		}
-		for (j = 0; j < food; j++) {
+		for (j = 0; rand() % 100 < food; j++) {
 			px = rand() % WIDTH;
 			py = rand() % HEIGHT;
 			for (i = 0; i < MEM_SIZE; i++) {
@@ -580,7 +578,7 @@ int main(void)
 				//sprintf(buf ,"%d", k / 100);
 				//SDL_SaveBMP(screen, buf);
 			SDL_FillRect(screen, NULL, 0x000000);
-			
+
 		}
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -647,3 +645,4 @@ int main(void)
 	}
 	return (0);
 }
+
