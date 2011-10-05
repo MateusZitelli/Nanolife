@@ -61,6 +61,8 @@ def do(v):
 		print "ATK;"
 	elif v == 7:
 		print "GIVE;"
+	elif v == 8:
+		print "SEX_REP;"
 
 for i in range(1000):
 	if ptr >= len(prog) - 1 or pos >= len(prog) - 1: break
@@ -102,3 +104,4 @@ for i in range(1000):
 	#print memor
 print prog
 print times
+

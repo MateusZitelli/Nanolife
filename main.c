@@ -161,8 +161,8 @@ void run(struct bot *b, struct bot **lb)
 {
 	--b->energy;
 	//printf("%i -> %i\n", b->ptr, b->memory[b->ptr]);
-	unsigned short ngcode[MEM_SIZE], i;
-	int mean, p;
+	unsigned short ngcode[MEM_SIZE];
+	int mean, p, index = MEM_SIZE / 2, i;
 	switch (b->memory[b->ptr]) {
 	case 1:
 		b->dir = (b->dir + 1) % 4;
@@ -345,6 +345,75 @@ void run(struct bot *b, struct bot **lb)
 				    (b->energy + lb[b->p + SX]->energy) / 2.0;
 				b->energy = mean;
 				lb[b->p + SX]->energy = mean;
+			}
+			break;
+		}
+		break;
+  case 8:
+		switch (b->dir) {
+		index = rand() % MEM_SIZE;
+		case 0:
+			if (b->p + 1 < SX * SY && b->p + SX < SX * SY && lb[b->p + 1] != NULL && lb[b->p + SX] == NULL){
+			    //&& compatible(lb[b->p + 1], b)) {
+				for(i = 0; i < index; i++){
+					ngcode[i] = b->gcode[i];
+				}
+				for(i = index; i < MEM_SIZE; i++){
+				  ngcode[i] = lb[b->p + 1]->gcode[i];
+				}
+				set_bot(&bots[last++], b->p + SX,
+					b->energy / 5.0 + lb[b->p + 1]->energy / 5.0, ngcode, lb,
+					b->generation > lb[b->p + 1]->generation ? b->generation:lb[b->p + 1]->generation);
+				b->energy -= b->energy / 5.0;
+				lb[b->p + 1]->energy -= lb[b->p + 1]->energy/5.0;
+			}
+			break;
+		case 1:
+			if (b->p - SX >= 0 && b->p + 1 < SX * SY && lb[b->p - SX] != NULL && lb[b->p + 1] == NULL){
+			    //&& compatible(lb[b->p - SX], b)) {
+				for(i = 0; i < index; i++){
+					ngcode[i] = b->gcode[i];
+				}
+				for(i = index; i < MEM_SIZE; i++){
+				  ngcode[i] = lb[b->p - SX]->gcode[i];
+				}
+				set_bot(&bots[last++], b->p + 1,
+					b->energy / 5.0 + lb[b->p - SX]->energy / 5.0, ngcode, lb,
+					b->generation > lb[b->p - SX]->generation ? b->generation:lb[b->p - SX]->generation);
+				b->energy -= b->energy / 5.0;
+				lb[b->p - SX]->energy -= lb[b->p - SX]->energy/5.0;
+			}
+			break;
+		case 2:
+			if (b->p - 1 >= 0 && b->p - SX >= 0 && lb[b->p - 1] != NULL && lb[b->p - SX] == NULL){
+			    //&& compatible(lb[b->p - 1], b)) {
+				for(i = 0; i < index; i++){
+					ngcode[i] = b->gcode[i];
+				}
+				for(i = index; i < MEM_SIZE; i++){
+				  ngcode[i] = lb[b->p - 1]->gcode[i];
+				}
+				set_bot(&bots[last++], b->p - SX,
+					b->energy / 5.0 + lb[b->p - 1]->energy / 5.0, ngcode, lb,
+					b->generation > lb[b->p - 1]->generation ? b->generation:lb[b->p - 1]->generation);
+				b->energy -= b->energy / 5.0;
+				lb[b->p - 1]->energy -= lb[b->p - 1]->energy/5.0;
+			}
+			break;
+		case 3:
+			if (b->p + SX < SX * SY && b->p - 1 >= 0 && lb[b->p + SX] != NULL && lb[b->p - 1] == NULL){
+			    //&& compatible(lb[b->p + SX], b)) {
+				for(i = 0; i < index; i++){
+					ngcode[i] = b->gcode[i];
+				}
+				for(i = index; i < MEM_SIZE; i++){
+				  ngcode[i] = lb[b->p + SX]->gcode[i];
+				}
+				set_bot(&bots[last++], b->p - 1,
+					b->energy / 5.0 + lb[b->p + SX]->energy / 5.0, ngcode, lb,
+					b->generation > lb[b->p + SX]->generation ? b->generation:lb[b->p + SX]->generation);
+				b->energy -= b->energy / 5.0;
+				lb[b->p + SX]->energy -= lb[b->p + SX]->energy/5.0;
 			}
 			break;
 		}
